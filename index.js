@@ -37,20 +37,20 @@ async function ensureSessionFile() {
       process.exit(1);
     }
 
-    console.log("🔄 Malindu AI BOT's creds.json not found. Downloading session from MEGA...");
+    console.log("🔄 Malindu-AI-BOT's creds.json not found. Downloading session from MEGA...");
 
     const sessdata = config.SESSION_ID;
     const filer = File.fromURL(`https://mega.nz/file/${sessdata}`);
 
     filer.download((err, data) => {
       if (err) {
-        console.error("❌ Failed to download Malindu AI BOT's session file from MEGA:", err);
+        console.error("❌ Failed to download Malindu-AI-BOT's session file from MEGA:", err);
         process.exit(1);
       }
 
       fs.mkdirSync(path.join(__dirname, '/auth_info_baileys/'), { recursive: true });
       fs.writeFileSync(credsPath, data);
-      console.log("✅ Malindu AI BOT's Session downloaded and saved. Restarting bot...");
+      console.log("✅ Malindu-AI-BOT's Session downloaded and saved. Restarting bot...");
       setTimeout(() => {
         connectToWA();
       }, 2000);
@@ -63,11 +63,11 @@ async function ensureSessionFile() {
 }
 
 async function connectToWA() {
-  console.log("Connecting Malindu AI BOT 🧬...");
+  console.log("Connecting Malindu-AI-BOT 🧬...");
   const { state, saveCreds } = await useMultiFileAuthState(path.join(__dirname, '/auth_info_baileys/'));
   const { version } = await fetchLatestBaileysVersion();
 
-  const Malindu AI BOT = makeWASocket({
+  const Malindu-AI-BOT = makeWASocket({
     logger: P({ level: 'silent' }),
     printQRInTerminal: false,
     browser: Browsers.macOS("Firefox"),
@@ -78,17 +78,17 @@ async function connectToWA() {
     generateHighQualityLinkPreview: true,
   });
 
-  Malindu AI BOT.ev.on('connection.update', async (update) => {
+  Malindu-AI-BOT.ev.on('connection.update', async (update) => {
     const { connection, lastDisconnect } = update;
     if (connection === 'close') {
       if (lastDisconnect?.error?.output?.statusCode !== DisconnectReason.loggedOut) {
         connectToWA();
       }
     } else if (connection === 'open') {
-      console.log('✅ Malindu AI BOT connected to WhatsApp');
+      console.log('✅ Malindu-AI-BOT connected to WhatsApp');
 
-      const up = `CONGRATULATION 🎉🎉  Malindu AI BOT connected successfully ✅\n\nPREFIX: ${prefix}`;
-      await Malindu AI BOT.sendMessage(ownerNumber[0] + "@s.whatsapp.net", {
+      const up = `CONGRATULATION 🎉🎉  Malindu-AI-BOT connected successfully ✅\n\nPREFIX: ${prefix}`;
+      await Malindu-AI-BOT.sendMessage(ownerNumber[0] + "@s.whatsapp.net", {
         image: { url: `https://github.com/Malindubot/Malindu-AI-BOT/blob/main/images/Gemini_Generated_Image_b2vl32b2vl32b2vl.png?raw=true` },
         caption: up
       });
@@ -101,12 +101,12 @@ async function connectToWA() {
     }
   });
 
-  Malindu AI BOT.ev.on('creds.update', saveCreds);
+  Malindu-AI-BOT.ev.on('creds.update', saveCreds);
 
-  Malindu AI BOT.ev.on('messages.upsert', async ({ messages }) => {
+  Malindu-AI-BOT.ev.on('messages.upsert', async ({ messages }) => {
     for (const msg of messages) {
       if (msg.messageStubType === 68) {
-        await Malindu AI BOT.sendMessageAck(msg.key);
+        await Malindu-AI-BOT.sendMessageAck(msg.key);
       }
     }
 
@@ -116,7 +116,7 @@ async function connectToWA() {
     mek.message = getContentType(mek.message) === 'ephemeralMessage' ? mek.message.ephemeralMessage.message : mek.message;
     if (mek.key.remoteJid === 'status@broadcast') return;
 
-    const m = sms(Malindu AI BOT, mek);
+    const m = sms(Malindu-AI-BOT, mek);
     const type = getContentType(mek.message);
     const from = mek.key.remoteJid;
     const body = type === 'conversation' ? mek.message.conversation : mek.message[type]?.text || mek.message[type]?.caption || '';
@@ -125,30 +125,30 @@ async function connectToWA() {
     const args = body.trim().split(/ +/).slice(1);
     const q = args.join(' ');
 
-    const sender = mek.key.fromMe ? Malindu AI BOT.user.id : (mek.key.participant || mek.key.remoteJid);
+    const sender = mek.key.fromMe ? Malindu-AI-BOT.user.id : (mek.key.participant || mek.key.remoteJid);
     const senderNumber = sender.split('@')[0];
     const isGroup = from.endsWith('@g.us');
-    const botNumber = Malindu AI BOT.user.id.split(':')[0];
+    const botNumber = Malindu-AI-BOT.user.id.split(':')[0];
     const pushname = mek.pushName || 'Sin Nombre';
     const isMe = botNumber.includes(senderNumber);
     const isOwner = ownerNumber.includes(senderNumber) || isMe;
-    const botNumber2 = await jidNormalizedUser(Malindu AI BOT.user.id);
+    const botNumber2 = await jidNormalizedUser(Malindu-AI-BOT.user.id);
 
-    const groupMetadata = isGroup ? await Malindu AI BOT.groupMetadata(from).catch(() => {}) : '';
+    const groupMetadata = isGroup ? await Malindu-AI-BOT.groupMetadata(from).catch(() => {}) : '';
     const groupName = isGroup ? groupMetadata.subject : '';
     const participants = isGroup ? groupMetadata.participants : '';
     const groupAdmins = isGroup ? await getGroupAdmins(participants) : '';
     const isBotAdmins = isGroup ? groupAdmins.includes(botNumber2) : false;
     const isAdmins = isGroup ? groupAdmins.includes(sender) : false;
 
-    const reply = (text) => Malindu AI BOT.sendMessage(from, { text }, { quoted: mek });
+    const reply = (text) => Malindu-AI-BOT.sendMessage(from, { text }, { quoted: mek });
 
     if (isCmd) {
       const cmd = commands.find((c) => c.pattern === commandName || (c.alias && c.alias.includes(commandName)));
       if (cmd) {
-        if (cmd.react) Malindu AI BOT.sendMessage(from, { react: { text: cmd.react, key: mek.key } });
+        if (cmd.react) Malindu-AI-BOT.sendMessage(from, { react: { text: cmd.react, key: mek.key } });
         try {
-          cmd.function(Malindu AI BOT, mek, m, {
+          cmd.function(Malindu-AI-BOT, mek, m, {
             from, quoted: mek, body, isCmd, command: commandName, args, q,
             isGroup, sender, senderNumber, botNumber2, botNumber, pushname,
             isMe, isOwner, groupMetadata, groupName, participants, groupAdmins,
@@ -164,7 +164,7 @@ async function connectToWA() {
     for (const handler of replyHandlers) {
       if (handler.filter(replyText, { sender, message: mek })) {
         try {
-          await handler.function(Malindu AI BOT, mek, m, {
+          await handler.function(Malindu-AI-BOT, mek, m, {
             from, quoted: mek, body: replyText, sender, reply,
           });
           break;
@@ -179,7 +179,7 @@ async function connectToWA() {
 ensureSessionFile();
 
 app.get("/", (req, res) => {
-  res.send("Hey Uer, Malindu AI BOT started✅");
+  res.send("Hey Uer, Malindu-AI-BOT started✅");
 });
 
 app.listen(port, () => console.log(`Server listening on http://localhost:${port}`));
