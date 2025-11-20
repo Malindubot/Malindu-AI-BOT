@@ -8,7 +8,7 @@ module.exports = {
 SESSION_ID: process.env.SESSION_ID || "",
 ALIVE_IMG: process.env.ALIVE_IMG || "https://github.com/Malindubot/Malindu-AI-BOT/blob/main/images/Gemini_Generated_Image_b2vl32b2vl32b2vl.png?raw=true",
 ALIVE_MSG: process.env.ALIVE_MSG || "*Hello👋 Malindu AI BOT Is Alive Now😍*",
-BOT_OWNER: '94776121326',  // Replace with the owner's phone number
+BOT_OWNER: '94701369636',  // Replace with the owner's phone number
 
 
 
